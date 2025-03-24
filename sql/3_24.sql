@@ -6,14 +6,14 @@ use dev_realtime_v1_zhengwei_zhou;
 -- 3.3.1 创建订单表
 drop table if exists ods_order_info;
 create table ods_order_info (
-    `id` string COMMENT '订单编号',
-    `total_amount` decimal(10,2) COMMENT '订单金额',
-    `order_status` string COMMENT '订单状态',
-    `user_id` string COMMENT '用户id' ,
-    `payment_way` string COMMENT '支付方式',
-    `out_trade_no` string COMMENT '支付流水号',
-    `create_time` string COMMENT '创建时间',
-    `operate_time` string COMMENT '操作时间'
+                                `id` string COMMENT '订单编号',
+                                `total_amount` decimal(10,2) COMMENT '订单金额',
+                                `order_status` string COMMENT '订单状态',
+                                `user_id` string COMMENT '用户id' ,
+                                `payment_way` string COMMENT '支付方式',
+                                `out_trade_no` string COMMENT '支付流水号',
+                                `create_time` string COMMENT '创建时间',
+                                `operate_time` string COMMENT '操作时间'
 ) COMMENT '订单表'
 PARTITIONED BY ( `dt` string)
 row format delimited  fields terminated by '\t'
@@ -56,14 +56,14 @@ overwrite into table ods_payment_info partition (dt='2025-03-23');
 -- 3.3.2 创建订单详情表
 drop table if exists ods_order_detail;
 create table ods_order_detail(
-    `id` string COMMENT '订单编号',
-    `order_id` string  COMMENT '订单号',
-    `user_id` string COMMENT '用户id' ,
-    `sku_id` string COMMENT '商品id',
-    `sku_name` string COMMENT '商品名称',
-    `order_price` string COMMENT '下单价格',
-    `sku_num` string COMMENT '商品数量',
-    `create_time` string COMMENT '创建时间'
+                                 `id` string COMMENT '订单编号',
+                                 `order_id` string  COMMENT '订单号',
+                                 `user_id` string COMMENT '用户id' ,
+                                 `sku_id` string COMMENT '商品id',
+                                 `sku_name` string COMMENT '商品名称',
+                                 `order_price` string COMMENT '下单价格',
+                                 `sku_num` string COMMENT '商品数量',
+                                 `create_time` string COMMENT '创建时间'
 ) COMMENT '订单明细表'
 PARTITIONED BY ( `dt` string)
 row format delimited  fields terminated by '\t'
@@ -77,15 +77,15 @@ tblproperties ("parquet.compression"="snappy")
 -- 3.3.3 创建商品表
 drop table if exists ods_sku_info;
 create table ods_sku_info(
-    `id` string COMMENT 'skuId',
-    `spu_id` string   COMMENT 'spuid',
-    `price` decimal(10,2) COMMENT '价格' ,
-    `sku_name` string COMMENT '商品名称',
-    `sku_desc` string COMMENT '商品描述',
-    `weight` string COMMENT '重量',
-    `tm_id` string COMMENT '品牌id',
-    `category3_id` string COMMENT '品类id',
-    `create_time` string COMMENT '创建时间'
+                             `id` string COMMENT 'skuId',
+                             `spu_id` string   COMMENT 'spuid',
+                             `price` decimal(10,2) COMMENT '价格' ,
+                             `sku_name` string COMMENT '商品名称',
+                             `sku_desc` string COMMENT '商品描述',
+                             `weight` string COMMENT '重量',
+                             `tm_id` string COMMENT '品牌id',
+                             `category3_id` string COMMENT '品类id',
+                             `create_time` string COMMENT '创建时间'
 ) COMMENT '商品表'
 PARTITIONED BY ( `dt` string)
 row format delimited  fields terminated by '\t'
@@ -99,13 +99,13 @@ tblproperties ("parquet.compression"="snappy")
 
 drop table if exists ods_user_info;
 create table ods_user_info(
-    `id` string COMMENT '用户id',
-    `name`  string COMMENT '姓名',
-    `birthday` string COMMENT '生日' ,
-    `gender` string COMMENT '性别',
-    `email` string COMMENT '邮箱',
-    `user_level` string COMMENT '用户等级',
-    `create_time` string COMMENT '创建时间'
+                              `id` string COMMENT '用户id',
+                              `name`  string COMMENT '姓名',
+                              `birthday` string COMMENT '生日' ,
+                              `gender` string COMMENT '性别',
+                              `email` string COMMENT '邮箱',
+                              `user_level` string COMMENT '用户等级',
+                              `create_time` string COMMENT '创建时间'
 ) COMMENT '用户信息'
 PARTITIONED BY ( `dt` string)
 row format delimited  fields terminated by '\t'
@@ -120,8 +120,8 @@ tblproperties ("parquet.compression"="snappy")
 
 drop table if exists ods_base_category1;
 create table ods_base_category1(
-    `id` string COMMENT 'id',
-    `name`  string COMMENT '名称'
+                                   `id` string COMMENT 'id',
+                                   `name`  string COMMENT '名称'
 ) COMMENT '商品一级分类'
 PARTITIONED BY ( `dt` string)
 row format delimited  fields terminated by '\t'
@@ -152,9 +152,9 @@ tblproperties ("parquet.compression"="snappy")
 
 drop table if exists ods_base_category3;
 create table ods_base_category3(
-    `id` string COMMENT ' id',
-    `name`  string COMMENT '名称',
-    category2_id string COMMENT '二级品类id'
+                                   `id` string COMMENT ' id',
+                                   `name`  string COMMENT '名称',
+                                   category2_id string COMMENT '二级品类id'
 ) COMMENT '商品三级分类'
 PARTITIONED BY ( `dt` string)
 row format delimited  fields terminated by '\t'
@@ -170,16 +170,16 @@ tblproperties ("parquet.compression"="snappy")
 
 drop table if exists `ods_payment_info`;
 create table  `ods_payment_info`(
-    `id`   bigint COMMENT '编号',
-    `out_trade_no`    string COMMENT '对外业务编号',
-    `order_id`        string COMMENT '订单编号',
-    `user_id`         string COMMENT '用户编号',
-    `alipay_trade_no` string COMMENT '支付宝交易流水编号',
-    `total_amount`    decimal(16,2) COMMENT '支付金额',
-    `subject`         string COMMENT '交易内容',
-    `payment_type` string COMMENT '支付类型',
-    `payment_time`   string COMMENT '支付时间'
-   )  COMMENT '支付流水表'
+                                    `id`   bigint COMMENT '编号',
+                                    `out_trade_no`    string COMMENT '对外业务编号',
+                                    `order_id`        string COMMENT '订单编号',
+                                    `user_id`         string COMMENT '用户编号',
+                                    `alipay_trade_no` string COMMENT '支付宝交易流水编号',
+                                    `total_amount`    decimal(16,2) COMMENT '支付金额',
+                                    `subject`         string COMMENT '交易内容',
+                                    `payment_type` string COMMENT '支付类型',
+                                    `payment_time`   string COMMENT '支付时间'
+)  COMMENT '支付流水表'
 PARTITIONED BY ( `dt` string)
 row format delimited  fields terminated by '\t'
 location '/warehouse/gmall/ods/ods_payment_info/'
@@ -221,14 +221,14 @@ create external table dwd_comment_log
     server_time  string
 ) COMMENT ''
 PARTITIONED BY ( `dt` string)
-    row format delimited fields terminated by '\t'
-stored as  parquet
-location '/user/hive/warehouse/dev_realtime_yinshi.db/dwd/dwd_comment_log/'
+row format delimited fields terminated by '\t'
+location '/warehouse/gmall/dwd/dwd_comment_log/'
 tblproperties ("parquet.compression"="snappy")
 ;
 
 
-load data local inpath ''
+load data inpath '/2207A/zhengwei_zhou/dwd_comment_log/2025-03-23/dwd_comment_log__f20117c5_51bf_4d76_9343_2f4708e80253.gz'
+overwrite into table dwd_comment_log partition (dt='2025-03-23');
 
 
 
@@ -237,15 +237,15 @@ load data local inpath ''
 
 
 create table ods_comment_info(
-    id  string,
-    user_id string,
-    sku_id string,
-    spu_id string,
-    order_id string,
-    appraise string,
-    comment_txt string,
-    create_time string,
-    operate_time string
+                                 id  string,
+                                 user_id string,
+                                 sku_id string,
+                                 spu_id string,
+                                 order_id string,
+                                 appraise string,
+                                 comment_txt string,
+                                 create_time string,
+                                 operate_time string
 )partitioned by (dt string)
 row format delimited fields terminated by '\t'
 location '/warehouse/gmall/ods/ods_comment_info'
@@ -258,15 +258,15 @@ overwrite into table ods_comment_info partition (dt='2025-03-23');
 
 
 create table dwd_comment_info(
-    id  string,
-    user_id string,
-    sku_id string,
-    spu_id string,
-    order_id string,
-    appraise string,
-    comment_txt string,
-    create_time string,
-    operate_time string
+                                 id  string,
+                                 user_id string,
+                                 sku_id string,
+                                 spu_id string,
+                                 order_id string,
+                                 appraise string,
+                                 comment_txt string,
+                                 create_time string,
+                                 operate_time string
 )partitioned by (dt string)
 row format delimited fields terminated by '\t'
 stored as parquet
@@ -390,6 +390,8 @@ location '/warehouse/gmall/dwd/dwd_sku_info/'
 tblproperties ("parquet.compression"="snappy")
 ;
 
+set hive.exec.dynamic.partition.mode=nonstrict;
+
 
 insert  overwrite table   dwd_order_info partition(dt)
 select  * from ods_order_info
@@ -430,14 +432,139 @@ select
     sku.dt
 from
     ods_sku_info sku
-join ods_base_category3 c3 on sku.category3_id=c3.id
-    join ods_base_category2 c2 on c3.category2_id=c2.id
-    join ods_base_category1 c1 on c2.category1_id=c1.id
+        join ods_base_category3 c3 on sku.category3_id=c3.id
+        join ods_base_category2 c2 on c3.category2_id=c2.id
+        join ods_base_category1 c1 on c2.category1_id=c1.id
 where sku.dt='2025-03-23'  and c2.dt='2025-03-23'
-and  c3.dt='2025-03-23' and  c1.dt='2025-03-23'
-and sku.id is not null;
+  and  c3.dt='2025-03-23' and  c1.dt='2025-03-23'
+  and sku.id is not null;
 
 
+
+
+-- 3.5.1 创建用户行为宽表
+drop table if exists dws_user_action;
+create  external table dws_user_action
+(
+    user_id         string      comment '用户 id',
+    order_count     bigint      comment '下单次数 ',
+    order_amount    decimal(16,2)  comment '下单金额 ',
+    payment_count   bigint      comment '支付次数',
+    payment_amount  decimal(16,2) comment '支付金额 ',
+    comment_count   bigint      comment '评论次数'
+) COMMENT '每日用户行为宽表'
+PARTITIONED BY ( `dt` string)
+stored as  parquet
+location '/warehouse/gmall/dws/dws_user_action/'
+tblproperties ("parquet.compression"="snappy");
+--3.5.2 向用户行为宽表导入数据
+
+
+with
+    tmp_order as
+        (
+            select
+                user_id,
+                sum(oc.total_amount) order_amount,
+                count(*)  order_count
+            from dwd_order_info  oc
+            where date_format(oc.create_time,'yyyy-MM-dd')='2022-05-20'
+            group by user_id
+        )  ,
+    tmp_payment as
+        (
+            select
+                user_id,
+                sum(pi.total_amount) payment_amount,
+                count(*) payment_count
+            from dwd_payment_info pi
+            where date_format(pi.payment_time,'yyyy-MM-dd')='2022-05-20'
+            group by user_id
+        ),
+    tmp_comment as
+        (
+            select
+                user_id,
+                count(*) comment_count
+            from dwd_comment_log c
+            where date_format(c.dt,'yyyy-MM-dd')='2025-03-23'
+            group by user_id
+        )
+
+insert overwrite table dws_user_action partition(dt='2025-03-23')
+select
+    user_actions.user_id,
+    sum(user_actions.order_count),
+    sum(user_actions.order_amount),
+    sum(user_actions.payment_count),
+    sum(user_actions.payment_amount),
+    sum(user_actions.comment_count)
+from
+    (
+        select
+            user_id,
+            order_count,
+            order_amount ,
+            0 payment_count ,
+            0 payment_amount,
+            0 comment_count
+        from tmp_order
+
+        union all
+        select
+            user_id,
+            0,
+            0,
+            payment_count,
+            payment_amount,
+            0
+        from tmp_payment
+
+        union all
+        select
+            user_id,
+            0,
+            0,
+            0,
+            0,
+            comment_count
+        from tmp_comment
+    ) user_actions
+group by user_id;
+
+
+
+
+
+drop table if exists ads_gmv_sum_day;
+create table ads_gmv_sum_day(
+                                `dt` string COMMENT '统计日期',
+                                `gmv_count`  bigint COMMENT '当日gmv订单个数',
+                                `gmv_amount`  decimal(16,2) COMMENT '当日gmv订单总金额',
+                                `gmv_payment`  decimal(16,2) COMMENT '当日支付金额'
+) COMMENT '每日活跃用户数量'
+row format delimited  fields terminated by '\t'
+location '/warehouse/gmall/ads/ads_gmv_sum_day/'
+;
+
+
+
+
+
+insert into table ads_gmv_sum_day
+select
+    '2025-03-23' dt ,
+    sum(order_count)  gmv_count ,
+    sum(order_amount) gmv_amount ,
+    sum(payment_amount) payment_amount
+from dws_user_action
+where dt ='2025-03-23'
+group by dt
+;
+
+
+
+select * from ads_gmv_sum_day;
 
 
 
