@@ -1,0 +1,69 @@
+package com.zzw;
+import com.alibaba.fastjson.JSONObject;
+import org.apache.flink.api.common.serialization.SimpleStringSchema;
+import org.apache.flink.streaming.api.datastream.DataStream;
+import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
+import org.apache.flink.streaming.api.functions.source.SourceFunction;
+import org.apache.flink.streaming.connectors.kafka.FlinkKafkaProducer;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Properties;
+import java.util.Random;
+public class flink_kafka {
+
+    public static void main(String[] args) throws Exception {
+        StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
+
+        // 1. 生成模拟 JSON 数据
+        DataStream<String> jsonStream = env.addSource(new JsonSource());
+
+        // 2. 配置 Kafka 生产者
+        Properties kafkaProps = new Properties();
+        kafkaProps.setProperty("bootstrap.servers", "cdh01:9092,cdh02:9092,cdh03:9092"); // Kafka 地址
+        kafkaProps.setProperty("topic", "zhengwei_zhou"); // Kafka 主题
+
+        FlinkKafkaProducer<String> kafkaProducer = new FlinkKafkaProducer<>(
+                "zhengwei_zhou",
+                new SimpleStringSchema(),
+                kafkaProps
+        );
+
+        jsonStream.addSink(kafkaProducer);
+
+        env.execute();
+    }
+
+    public static class JsonSource implements SourceFunction<String> {
+        private static final long serialVersionUID = 1L;
+        private volatile boolean isRunning = true;
+        private final Random random = new Random();
+        private final String[] names = {"Alice", "Bob", "Charlie", "David", "Eve"};
+        private final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
+        @Override
+        public void run(SourceContext<String> ctx) throws Exception {
+            while (isRunning) {
+                int id = random.nextInt(1000);
+                String name = names[random.nextInt(names.length)];
+                int age = random.nextInt(50) + 18;
+                String ds = sdf.format(new Date());
+                long ts = System.currentTimeMillis();
+
+                JSONObject json = new JSONObject();
+                json.put("id", id);
+                json.put("name", name);
+                json.put("age", age);
+                json.put("ds", ds);
+                json.put("ts", ts);
+
+                ctx.collect(json.toString());
+                Thread.sleep(1000);
+            }
+        }
+
+        @Override
+        public void cancel() {
+            isRunning = false;
+        }
+    }
+}
