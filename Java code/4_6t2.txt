@@ -1,0 +1,63 @@
+package com.zzw;
+
+import org.apache.flink.api.common.serialization.SimpleStringEncoder;
+import org.apache.flink.core.fs.Path;
+import org.apache.flink.streaming.api.datastream.DataStream;
+import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
+import org.apache.flink.streaming.api.functions.sink.filesystem.StreamingFileSink;
+import org.apache.flink.streaming.api.functions.sink.filesystem.rollingpolicies.DefaultRollingPolicy;
+import org.apache.flink.streaming.connectors.kafka.FlinkKafkaConsumer;
+import java.util.Properties;
+import java.util.concurrent.TimeUnit;
+
+public class kafka_to_hdfs {
+
+    public static void main(String[] args) throws Exception {
+        // 1. 获取 Flink 执行环境
+        StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
+
+        // 2. 配置 Kafka 消费者
+        Properties kafkaProps = new Properties();
+        kafkaProps.setProperty("bootstrap.servers", "cdh01:9092,cdh02:9092,cdh03:9092"); // Kafka 地址
+        kafkaProps.setProperty("group.id", "zhengwei_zhou"); // 消费者组
+
+        FlinkKafkaConsumer<String> consumer = new FlinkKafkaConsumer<>(
+                "zhengwei_zhou", // Kafka 主题
+                new org.apache.flink.api.common.serialization.SimpleStringSchema(),
+                kafkaProps
+        );
+
+        DataStream<String> kafkaStream = env.addSource(consumer);
+
+        // 配置 HDFS 写入路径
+        String hdfsPath = "hdfs://cdh01:8020/2207A/zhengwei_zhou/kafka_hdfs";
+
+        // 配置文件滚动策略
+        DefaultRollingPolicy<String, String> rollingPolicy = DefaultRollingPolicy.builder()
+                .withRolloverInterval(TimeUnit.MINUTES.toMillis(1)) // 每 30 分钟滚动一次文件
+                .withInactivityInterval(TimeUnit.MINUTES.toMillis(10)) // 10 分钟无活动则滚动文件
+                .withMaxPartSize(1024 * 1024 * 256) // 每个文件最大 256MB
+                .build();
+
+        // 创建 StreamingFileSink
+        StreamingFileSink<String> sink = StreamingFileSink
+                .forRowFormat(new Path(hdfsPath), new SimpleStringEncoder<String>("UTF-8"))
+                .withRollingPolicy(rollingPolicy)
+                .build();
+
+        // 将 Kafka 数据流写入 HDFS
+        kafkaStream.addSink(sink);
+
+
+        // 5. 执行作业
+        env.execute("Flink Kafka Consumer Job");
+    }
+}
+
+
+
+
+
+
+
+
